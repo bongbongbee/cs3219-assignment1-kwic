@@ -1,4 +1,7 @@
 package com.teamfour;
+
+import com.teamfour.pipesandfilters.PipeAndFilter;
+
 /**
  * 
  */
@@ -15,8 +18,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
+    	PipeAndFilter.run();
     }
 
 }
