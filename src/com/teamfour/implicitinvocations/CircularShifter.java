@@ -2,7 +2,6 @@ package com.teamfour.implicitinvocations;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,39 +14,19 @@ import com.teamfour.utilities.StringUtils;
 public class CircularShifter implements Observer {
     private static final String WHITESPACE = " ";
 
-    private LineStorage originalLines, shiftedLines;
+    private LineStorage shiftedLines;
     private ArrayList<String> ignoredWords;
 
     public CircularShifter(LineStorage shiftedLines) {
         this.shiftedLines = shiftedLines;
         File ignoredWordsFile = new File("ignoredWords.txt");
-        try {
-            Scanner scanner = new Scanner(ignoredWordsFile);
-            ignoredWords = new ArrayList<>();
-            while (scanner.hasNextLine()) {
-                String word = scanner.nextLine();
-                ignoredWords.add(word);
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        getIgnoredWords(ignoredWordsFile);
     }
 
     public CircularShifter(LineStorage shiftedLines, String pathName) {
         this.shiftedLines = shiftedLines;
         File ignoredWordsFile = new File(pathName);
-        try {
-            Scanner scanner = new Scanner(ignoredWordsFile);
-            ignoredWords = new ArrayList<>();
-            while (scanner.hasNextLine()) {
-                String word = scanner.nextLine().toLowerCase();
-                ignoredWords.add(word);
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        getIgnoredWords(ignoredWordsFile);
     }
 
     @Override
@@ -56,9 +35,57 @@ public class CircularShifter implements Observer {
             return;
         }
 
-        originalLines = (LineStorage) o;
+        LineStorage originalLines = (LineStorage) o;
+        ArrayList<List<String>> shiftedWordsList = getListOfShiftedWords(originalLines);
+        filterListWithIgnoredWords(shiftedWordsList);
+    }
 
-        String line = originalLines.getLine();
+    private void getIgnoredWords(File ignoredWordsFile) {
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(ignoredWordsFile);
+            ignoredWords = new ArrayList<>();
+            while (scanner.hasNextLine()) {
+                String word = scanner.nextLine();
+                ignoredWords.add(word);
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            scanner.close();
+        }
+    }
+
+    private void filterListWithIgnoredWords(ArrayList<List<String>> shiftedWordsList) {
+        for (List<String> sw : shiftedWordsList) {
+            String firstWord = sw.get(0).toLowerCase();
+
+            if (!ignoredWords.contains(firstWord)) {
+                String line = buildStringFromWords(sw);
+                shiftedLines.addLine(line);
+            }
+        }
+    }
+
+    private String buildStringFromWords(List<String> sw) {
+        // iterate through words to build a string
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < sw.size(); i++) {
+            String word = sw.get(i);
+            sb.append(word);
+
+            // add whitespace for all words. Last word is excluded
+            if (i != sw.size() - 1) {
+                sb.append(WHITESPACE);
+            }
+        }
+        return sb.toString();
+    }
+
+    private ArrayList<List<String>> getListOfShiftedWords(LineStorage lineStorage) {
+        String line = lineStorage.getLine();
         String[] words = StringUtils.tokenize(line);
         ArrayList<List<String>> shiftedWordsList = new ArrayList<>();
 
@@ -87,30 +114,7 @@ public class CircularShifter implements Observer {
             System.arraycopy(words, 0, shiftedWords, 0, numOfWords);
             shiftedWordsList.add(Arrays.asList(shiftedWords));
         }
-
-        for (List<String> sw : shiftedWordsList) {
-            String firstWord = sw.get(0).toLowerCase();
-
-            if (!ignoredWords.contains(firstWord)) {
-
-                // iterate through words to build a string
-                StringBuilder sb = new StringBuilder();
-
-                for (int i = 0; i < sw.size(); i++) {
-                    String word = sw.get(i);
-                    sb.append(word);
-
-                    // add whitespace for all words. Last word is excluded
-                    if (i != sw.size() - 1) {
-                        sb.append(WHITESPACE);
-                    }
-                }
-                // System.out.println(sb.toString());
-                shiftedLines.addLine(sb.toString());
-
-            }
-        }
-
+        return shiftedWordsList;
     }
 
 }

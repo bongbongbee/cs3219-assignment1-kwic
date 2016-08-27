@@ -12,12 +12,11 @@ public class ImplicitInvocation {
         LineStorage shiftedLines = new LineStorage();
         CircularShifter circularShifter = new CircularShifter(shiftedLines);
         Alphabetizer alphabetizer = new Alphabetizer();
-        
+
         originalLines.addObserver(circularShifter);
         shiftedLines.addObserver(alphabetizer);
-        
+
         input.readInto(originalLines);
         Output.print(shiftedLines);
     }
-
 }
