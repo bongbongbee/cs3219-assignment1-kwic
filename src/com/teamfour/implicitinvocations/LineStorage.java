@@ -33,12 +33,12 @@ public class LineStorage extends Observable {
     
     public void addLine(String line){
         lines.add(line);
-        this.notifyObservers(lastAddedIndex++);
+        this.notifyObservers();
         
     }
     
-    public String getLine(int index){
-        return lines.get(index);
+    public String getLine(){
+        return lines.get(lastAddedIndex++);
     }
 
 }
