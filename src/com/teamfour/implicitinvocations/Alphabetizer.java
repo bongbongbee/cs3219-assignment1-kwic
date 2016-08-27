@@ -4,14 +4,21 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class Alphabetizer implements Observer {
-
+    private LineStorage shiftedLines;
+    
     public Alphabetizer() {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        // TODO Auto-generated method stub
+        if(!(o instanceof LineStorage)){
+            return;
+        }
+        
+        shiftedLines = (LineStorage) o;
+        String line = shiftedLines.getLine();
+        String firstCharUpperCase = Character.toString(line.charAt(0)).toUpperCase();
+        String lineWithFirstCharUpperCase = firstCharUpperCase + line.substring(1);
         
     }
 
