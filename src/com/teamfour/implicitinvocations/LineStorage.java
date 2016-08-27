@@ -1,6 +1,7 @@
 package com.teamfour.implicitinvocations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Observable;
 
 public class LineStorage extends Observable {
@@ -25,6 +26,13 @@ public class LineStorage extends Observable {
     
     public int getSize(){
         return lines.size();
+    }
+    
+    public void sort(){
+        //reset currentIndex
+        lastAddedIndex = 0;
+        
+        Collections.sort(lines);
     }
 
 }
