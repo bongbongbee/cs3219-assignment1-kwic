@@ -19,6 +19,7 @@ public class Alphabetizer implements Observer {
         String line = shiftedLines.getLine();
         String firstCharUpperCase = Character.toString(line.charAt(0)).toUpperCase();
         String lineWithFirstCharUpperCase = firstCharUpperCase + line.substring(1);
+        line = lineWithFirstCharUpperCase;
         
     }
 
