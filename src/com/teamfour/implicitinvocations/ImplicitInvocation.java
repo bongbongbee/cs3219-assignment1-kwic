@@ -1,12 +1,12 @@
 package com.teamfour.implicitinvocations;
 
-public class MasterControl {
+public class ImplicitInvocation {
 
-    public MasterControl() {
+    public ImplicitInvocation() {
         // TODO Auto-generated constructor stub
     }
 
-    public static void run(String[] args) {
+    public static void main(String[] args) {
         // TODO Auto-generated method stub
 
     }
