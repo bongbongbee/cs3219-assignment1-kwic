@@ -14,7 +14,7 @@ import com.teamfour.utilities.StringUtils;
 
 public class CircularShifter implements Observer {
     private static final String WHITESPACE = " ";
-    
+
     private LineStorage originalLines, shiftedLines;
     private ArrayList<String> ignoredWords;
 
@@ -23,6 +23,7 @@ public class CircularShifter implements Observer {
         File ignoredWordsFile = new File("ignoredWords.txt");
         try {
             Scanner scanner = new Scanner(ignoredWordsFile);
+            ignoredWords = new ArrayList<>();
             while (scanner.hasNextLine()) {
                 String word = scanner.nextLine();
                 ignoredWords.add(word);
@@ -38,6 +39,7 @@ public class CircularShifter implements Observer {
         File ignoredWordsFile = new File(pathName);
         try {
             Scanner scanner = new Scanner(ignoredWordsFile);
+            ignoredWords = new ArrayList<>();
             while (scanner.hasNextLine()) {
                 String word = scanner.nextLine().toLowerCase();
                 ignoredWords.add(word);
@@ -71,7 +73,7 @@ public class CircularShifter implements Observer {
         shiftedWordsList.add(Arrays.asList(shiftedWords));
 
         // add first word to last pos and shift remaining words to the left
-        for (int i = 0; i < numOfWords; i++) {
+        for (int i = 0; i < numOfWords - 1; i++) {
             String firstWord = words[0];
 
             for (int j = 1; j < numOfWords; j++) {
@@ -81,6 +83,7 @@ public class CircularShifter implements Observer {
             words[lastIndex] = firstWord;
 
             // make a new copy of current string array and add to list
+            shiftedWords = new String[numOfWords];
             System.arraycopy(words, 0, shiftedWords, 0, numOfWords);
             shiftedWordsList.add(Arrays.asList(shiftedWords));
         }
@@ -92,17 +95,17 @@ public class CircularShifter implements Observer {
 
                 // iterate through words to build a string
                 StringBuilder sb = new StringBuilder();
-                
+
                 for (int i = 0; i < sw.size(); i++) {
                     String word = sw.get(i);
                     sb.append(word);
-                    
-                    //add whitespace for all words. Last word is excluded
+
+                    // add whitespace for all words. Last word is excluded
                     if (i != sw.size() - 1) {
                         sb.append(WHITESPACE);
                     }
                 }
-                
+                // System.out.println(sb.toString());
                 shiftedLines.addLine(sb.toString());
 
             }
