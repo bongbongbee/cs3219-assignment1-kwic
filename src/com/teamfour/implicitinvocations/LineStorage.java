@@ -1,9 +1,14 @@
 package com.teamfour.implicitinvocations;
 
-public class LineStorage {
+import java.util.ArrayList;
+import java.util.Observable;
 
+public class LineStorage extends Observable {
+
+    private ArrayList<String> lines;
+    
     public LineStorage() {
-        // TODO Auto-generated constructor stub
+        lines = new ArrayList<>();
     }
 
 }
