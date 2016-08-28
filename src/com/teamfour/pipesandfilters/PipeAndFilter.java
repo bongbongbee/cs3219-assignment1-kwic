@@ -4,7 +4,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class PipeAndFilter {
-	public static void main(String[] args) {
+	//public static void main(String[] args) {
+	public static void run()
+	{
 		try {
 			FileInputStream inputSentences = new FileInputStream("input.txt");
 			FileInputStream ignoredKeywords = new FileInputStream("ignoredWords.txt");
