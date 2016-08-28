@@ -2,11 +2,7 @@ package com.teamfour.implicitinvocations;
 
 public class ImplicitInvocation {
 
-    public ImplicitInvocation() {
-        // TODO Auto-generated constructor stub
-    }
-
-    public static void main(String[] args) {
+    public static void run() {
         Input input = new Input();
         LineStorage originalLines = new LineStorage();
         LineStorage shiftedLines = new LineStorage();
