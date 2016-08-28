@@ -1,59 +1,71 @@
 package com.teamfour.pipesandfilters;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-public class CircularShift {
+import java.io.CharArrayWriter;
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+public class CircularShift extends Filter {
 
 	
-	public CircularShift()
-	{
-		
+	public CircularShift(Pipe input, Pipe output) {
+		super(input, output);
 	}
-	public ArrayList<String> fetchCircularList(String[] ignoredList, String[] sentenceList) {
 
-		final String space = " ";
-		ArrayList<String> resultList = new ArrayList<String>();
-		
-		for(int x=0;x<sentenceList.length;x++)
-		{
-			String[] singleSentenceToArray = sentenceList[x].split(space);
-			
-			for(int k=0;k<singleSentenceToArray.length;k++)
-			{
-				for(int y=0;y<ignoredList.length;y++)
-				{
+	@Override
+	protected void transform() {
+		try {
+			CharArrayWriter writer = new CharArrayWriter();
+			int k = input_.readInput();
+			String[] ignoredWords = input_.readIgnoredWords();
+			while (k != -1) {
+				
+				if (((char) k) == '\n') {
+				
+					String line = writer.toString();
+					StringTokenizer strTokenizer = new StringTokenizer(line);
+					String[] numberOfWords = new String[strTokenizer.countTokens()];
+					//System.out.println("|line : |" + line + "| number of toknizer count: |"+strTokenizer.countTokens());
 
-					if(ignoredList[y].equals(singleSentenceToArray[0]) || capitalize(ignoredList[y]).equals(singleSentenceToArray[0]) )//cap or dont cap both need to check
-					{
-						//covert the array to arraylist
-						ArrayList<String> currentSentence = new ArrayList<String>(Arrays.asList(singleSentenceToArray));
-						//add to the btm
-						currentSentence.add(currentSentence.get(0));
-						currentSentence.remove(0);
-						currentSentence.toArray(singleSentenceToArray);
-						//remove the first
+
+					int i = 0;
+					while (strTokenizer.hasMoreTokens()) {
+						numberOfWords[i++] = strTokenizer.nextToken();
+					}
+					//System.out.println("|line : |" + line + "| number of words length: |"+numberOfWords.length);
+
+					for (i = 0; i < numberOfWords.length; i++) {
+						String shift = "";
+						for (int j = i; j < (numberOfWords.length + i); j++) {
+							shift += numberOfWords[j % numberOfWords.length];
+							if (j < (numberOfWords.length - 1 + i)) {
+								shift += " ";
+							}	
+							//System.out.println(shift);
+						}
+						shift += '\n';
 						
-						break;
+						char[] chars = shift.toCharArray();
+						
+						for (int j = 0; j < chars.length; j++) 
+						{
+							output_.writeOutput(chars[j]);
+							
+						}				
 					}
-					else if(y==ignoredList.length-1 && ignoredList[y].equals(singleSentenceToArray[0])==false)
-					{
-						resultList.add(Arrays.toString(singleSentenceToArray));
-						ArrayList<String> currentSentence = new ArrayList<String>(Arrays.asList(singleSentenceToArray));
-						currentSentence.add(currentSentence.get(0));
-						currentSentence.remove(0);
-						currentSentence.toArray(singleSentenceToArray);
-						break;
-					}
-					
+					writer.reset();
+				} 
+				else
+				{
+					writer.write(k);
+				
 				}
+				k = input_.readInput();
 			}
-			
+			output_.writeOutput(ignoredWords);
+			output_.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
-		
-		return resultList;
 	}
-	private String capitalize(String line) {
-		   return Character.toUpperCase(line.charAt(0)) + line.substring(1);
-		}
+
 }

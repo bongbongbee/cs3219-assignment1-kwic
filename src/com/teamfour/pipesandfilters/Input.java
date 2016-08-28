@@ -1,60 +1,88 @@
 package com.teamfour.pipesandfilters;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
-public class Input{
-	
-	Scanner sc;
-	public Input()
-	{
-		sc  = new Scanner(System.in);
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+public class Input extends Filter {
+	private InputStream input;
+	private InputStream ignoredWords;
+	public Input(FileInputStream ignoredKeywords, FileInputStream inputSentences, Pipe output) {
+		super(null, output);
+		ignoredWords = ignoredKeywords;
+		input = inputSentences;
 	}
-	
-	public String[] fetchIgnoredList() {
-		final String MESSAGE1 = "Enter Ignored Words: ";
-		final String comma = ",";
-		System.out.println(MESSAGE1);
-		String manySentence = sc.nextLine();
-		manySentence= manySentence.toLowerCase();
-		String[] stringArraySentences = manySentence.split(comma);
-		for(int x=0;x<stringArraySentences.length;x++)
-		{
-			if(stringArraySentences[x].startsWith(" "))
+
+	@Override
+	protected void transform() {
+		try {
+			
+			final String comma = ",";
+			byte[] data = new byte[ignoredWords.available()];
+			ignoredWords.read(data);
+			ignoredWords.close();
+			String manyIgnoredWords = new String(data, "UTF-8");
+			manyIgnoredWords= manyIgnoredWords.toLowerCase();
+			//String[] stringArraySentences = manySentence.split(comma);
+			String[] stringArrayIgnored = manyIgnoredWords.split("\n");
+			
+			//System.out.println("stringArrayIgnored length is : " + stringArrayIgnored.length);
+			for(int x=0;x<stringArrayIgnored.length;x++)
 			{
-				stringArraySentences[x] = stringArraySentences[x].substring(1);
+				if(x<stringArrayIgnored.length-1)
+				{
+					stringArrayIgnored[x] = stringArrayIgnored[x].substring(0, stringArrayIgnored[x].length() - 1);
+
+				}
 			}
-			//System.out.println(stringArraySentences[x]);
-		}
-		return stringArraySentences;	
-	}
-
-	public String[] fetchSentenceList() {
-		final String MESSAGE1 = "Enter Setence: ";
-		final String comma = ",";
-		System.out.println(MESSAGE1);
-		String manySentence = sc.next();
-		manySentence+= sc.nextLine();
-		//manySentence= manySentence.toLowerCase();
-
-		String[] stringArraySentences = manySentence.split(comma);
-		for(int x=0;x<stringArraySentences.length;x++)
-		{
-			if(stringArraySentences[x].startsWith(" "))
+			/*for(int x=0;x<stringArraySentences.length;x++)
 			{
-				stringArraySentences[x] = stringArraySentences[x].substring(1);
+				if(stringArraySentences[x].startsWith(" "))
+				{
+					stringArraySentences[x] = stringArraySentences[x].substring(1);
+				}
+			}*/
+			output_.writeOutput(stringArrayIgnored);
+			
+			boolean newLine = false;
+			boolean newWord = false;
+			boolean lineStart = false;
+			
+			int singleChar = input.read();
+			while (singleChar != -1) {
+				if((byte)singleChar == '\n'){
+					newLine=true;
+				}
+				else if((byte)singleChar == ' '){
+					newWord=true;
+				}
+				else if((byte)singleChar == '\t'){
+					newWord=true;
+				}
+				else if((byte)singleChar == '\r'){
+				}
+				else{
+					if (newLine) {
+						output_.writeOutput('\n');
+						newLine = false;
+						lineStart = false;
+					}
+					if (newWord) {
+						if (lineStart) {
+							output_.writeOutput(' ');
+						}
+						newWord = false;
+					}
+					output_.writeOutput(singleChar);
+					lineStart = true;
+				}
+				singleChar = input.read();
 			}
-			//System.out.println(stringArraySentences[x]);
+			output_.writeOutput('\n');
+			output_.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
-		return stringArraySentences;		
 	}
 
-	
-	
-	
-
-	
-
-	
 }
