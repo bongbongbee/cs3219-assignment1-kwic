@@ -14,7 +14,7 @@ public class Output {
     }
 
     private static void saveOutputToFile(LineStorage lineStorage) {
-        Path path = Paths.get("output.txt");
+        Path path = Paths.get("output2.txt");
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
 
