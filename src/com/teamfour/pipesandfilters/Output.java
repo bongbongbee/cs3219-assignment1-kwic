@@ -17,7 +17,7 @@ public class Output extends Filter {
 		try {
 			int k = input_.readInput();
 						
-			File file = new File("expectedOutput.txt");
+			File file = new File("output.txt");
 			if (!file.exists()) {
 				file.createNewFile();
 			}
