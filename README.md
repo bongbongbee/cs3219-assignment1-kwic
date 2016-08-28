@@ -11,4 +11,4 @@
 <br>3. Final output for Pipes and Filters will be saved to `output.txt`, Implicit Invocations to `output2.txt`
 
 <br>
-*Note:* If you would like to use your own input, make sure to name it as `input.txt` and `ignoredWords.txt` and save it in the project root folder. Every input line must be on a new line.
+*Note:* If you would like to use your own input, make sure to name it as `input.txt` and `ignoredWords.txt` and save it as text files in the project root folder. Every lines in the input file is separated by a new line.
